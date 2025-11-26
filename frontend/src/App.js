@@ -151,21 +151,18 @@ function App() {
           collapsed={sidebarCollapsed}
           onCollapse={setSidebarCollapsed}
           breakpoint="lg"
-          collapsedWidth={isMobile ? 0 : 80}
+          collapsedWidth={isMobile ? 0 : 0}
           trigger={null}
           style={{
             background: '#fff',
             borderRight: '1px solid #f0f0f0',
             overflow: 'hidden',
-            position: isMobile ? 'fixed' : 'relative',
-            left: 0,
-            top: 0,
-            bottom: 0,
+            position: isMobile ? 'fixed' : undefined,
             height: '100vh',
-            zIndex: 100,
+            zIndex: isMobile ? 100 : undefined,
             boxShadow: isMobile && !sidebarCollapsed ? '2px 0 8px rgba(0,0,0,0.15)' : 'none',
           }}
-          className="chat-sidebar"
+          className={isMobile ? "chat-sidebar-mobile" : "chat-sidebar"}
         >
           <ConversationList
             conversations={conversations}
@@ -215,8 +212,7 @@ function App() {
 
         {/* Main Content Area */}
         <Layout style={{ 
-          marginLeft: isMobile ? 0 : (sidebarCollapsed ? 80 : 280),
-          transition: 'margin-left 0.2s ease',
+          marginLeft: isMobile ? 0 : undefined,
           height: '100vh',
         }}>
           <Content style={{ height: '100vh', overflow: 'hidden', position: 'relative' }}>
