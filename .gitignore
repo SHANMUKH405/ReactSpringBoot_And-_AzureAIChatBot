@@ -42,6 +42,10 @@ Thumbs.db
 deploy-full-stack.sh
 deploy-to-azure.sh
 
+# Local startup scripts (contain API keys for local dev only)
+backend/start-local.sh
+START_BACKEND_LOCAL.sh
+
 # Documentation files (keep only README.md for production)
 *.md
 !README.md
