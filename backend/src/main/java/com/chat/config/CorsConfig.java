@@ -18,8 +18,8 @@ import java.util.List;
  * CORS = Cross-Origin Resource Sharing
  * 
  * Why we need this:
- * - Frontend runs on http://localhost:3000
- * - Backend runs on http://localhost:8080
+ * - Frontend runs on http://localhost:3000 or Vercel
+ * - Backend runs on Azure
  * - Browsers block requests between different origins (security)
  * - This config allows frontend to call backend APIs
  * 
@@ -33,7 +33,25 @@ public class CorsConfig implements WebMvcConfigurer {
     private String allowedOrigins;
     
     /**
-     * Configures CORS settings
+     * CORS Configuration Source for Spring Security
+     * This is needed to integrate CORS with Spring Security filter chain
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.setAllowedOrigins(java.util.Arrays.asList(allowedOrigins.split(",")));
+        configuration.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(java.util.Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
+    }
+    
+    /**
+     * Configures CORS settings for MVC
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -44,8 +62,5 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowCredentials(true) // Allow cookies/credentials
                 .maxAge(3600); // Cache preflight response for 1 hour
     }
-    
-    // Removed duplicate CORS configuration to avoid conflicts
-    // Using only addCorsMappings method above
 }
 
