@@ -1,0 +1,73 @@
+# Java/Maven
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/*.iml
+backend/.idea/
+
+# Node.js
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/.env.production
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+
+# Deployment scripts (may contain sensitive info)
+deploy-full-stack.sh
+deploy-to-azure.sh
+
+# Temporary/helper documentation files
+AZURE_QUOTA_ISSUE.md
+AZURE_SETUP_HELP.md
+AZURE_SUBSCRIPTION_SELECT.md
+AZURE_SWITCH_SUBSCRIPTION_STEPS.md
+AZURE_SWITCH_SUBSCRIPTION.md
+CHECK_APPROVED_QUOTA.md
+CLICK_AZURE_SUB_1.md
+CLICK_SUBSCRIPTION_IN_SIDEBAR.md
+DIRECT_SUBSCRIPTION_LINK.md
+FIND_APP_SERVICE_QUOTA.md
+HOW_TO_REQUEST_QUOTA_PORTAL.md
+QUOTA_EXPLANATION.md
+SIMPLE_NEXT_STEPS.md
+SWITCH_SUBSCRIPTION_NOW.md
+ALTERNATIVE_DEPLOYMENT.md
+API_KEY_FIX.md
+AZURE_ACCOUNT_SETUP.md
+AZURE_DEPLOYMENT_CHECKLIST.md
+AZURE_DEPLOYMENT_SUCCESS.md
+AZURE_REQUEST_QUOTA.md
+DEPLOYMENT_COMPLETE.md
+ERROR_EXPLANATION.md
+FRONTEND_CONNECTION_FIX.md
+RAILWAY_DEPLOYMENT_GUIDE.md
+
+# Azure deployment outputs
+swa_output.json
+
