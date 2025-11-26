@@ -5,6 +5,12 @@
   box-sizing: border-box;
 }
 
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -38,3 +44,52 @@ code {
   background: #555;
 }
 
+/* Mobile responsive scrollbar */
+@media (max-width: 768px) {
+  .chat-messages::-webkit-scrollbar {
+    width: 4px;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove default button styles */
+button {
+  font-family: inherit;
+}
+
+/* Improve input styling */
+input, textarea {
+  font-family: inherit;
+}
+
+/* Ant Design Layout overrides for better mobile experience */
+@media (max-width: 768px) {
+  .ant-layout-sider {
+    position: fixed !important;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .ant-layout-sider-collapsed {
+    transform: translateX(0);
+  }
+  
+  .ant-layout-content {
+    margin-left: 0 !important;
+  }
+}

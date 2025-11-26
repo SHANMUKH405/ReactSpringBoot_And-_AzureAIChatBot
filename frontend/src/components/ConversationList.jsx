@@ -1,11 +1,13 @@
 import React from 'react';
 import { List, Button, Typography, Empty } from 'antd';
 import { MessageOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import './ConversationList.css';
 
 const { Text } = Typography;
 
 /**
  * ConversationList Component - Displays list of conversations
+ * Responsive design for desktop and mobile
  */
 const ConversationList = ({ conversations, activeConversationId, onSelectConversation, onDeleteConversation, onCreateConversation }) => {
   const formatDate = (dateString) => {
@@ -23,72 +25,70 @@ const ConversationList = ({ conversations, activeConversationId, onSelectConvers
   };
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '16px', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text strong style={{ fontSize: 16 }}>Conversations</Text>
+    <div className="conversation-list-container">
+      <div className="conversation-list-header">
+        <Text strong className="conversation-list-title">Conversations</Text>
         <Button
           type="primary"
           icon={<PlusOutlined />}
           size="small"
           onClick={onCreateConversation}
+          className="new-conversation-button"
         >
-          New
+          <span className="new-button-text">New</span>
         </Button>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div className="conversation-list-content">
         {conversations.length === 0 ? (
           <Empty
             description="No conversations yet"
-            style={{ marginTop: 50 }}
+            className="conversation-empty"
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           />
         ) : (
           <List
             dataSource={conversations}
-            renderItem={(conversation) => (
-              <List.Item
-                style={{
-                  cursor: 'pointer',
-                  backgroundColor: activeConversationId === conversation.id?.toString() ? '#e6f7ff' : 'transparent',
-                  padding: '12px 16px',
-                  borderLeft: activeConversationId === conversation.id?.toString() ? '3px solid #1890ff' : '3px solid transparent',
-                }}
-                onClick={() => onSelectConversation(conversation.id)}
-                actions={[
-                  <Button
-                    type="text"
-                    danger
-                    icon={<DeleteOutlined />}
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteConversation(conversation.id);
-                    }}
-                  />,
-                ]}
-              >
-                <List.Item.Meta
-                  avatar={<MessageOutlined style={{ fontSize: 20, color: '#1890ff' }} />}
-                  title={
-                    <Text
-                      ellipsis
-                      style={{
-                        maxWidth: 150,
-                        fontWeight: activeConversationId === conversation.id?.toString() ? 'bold' : 'normal',
+            className="conversation-list"
+            renderItem={(conversation) => {
+              const isActive = activeConversationId === conversation.id?.toString();
+              return (
+                <List.Item
+                  className={`conversation-item ${isActive ? 'active' : ''}`}
+                  onClick={() => onSelectConversation(conversation.id)}
+                  actions={[
+                    <Button
+                      type="text"
+                      danger
+                      icon={<DeleteOutlined />}
+                      size="small"
+                      className="delete-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteConversation(conversation.id);
                       }}
-                    >
-                      {conversation.title || 'New Conversation'}
-                    </Text>
-                  }
-                  description={
-                    <Text type="secondary" style={{ fontSize: 12 }}>
-                      {formatDate(conversation.createdAt)}
-                    </Text>
-                  }
-                />
-              </List.Item>
-            )}
+                    />,
+                  ]}
+                >
+                  <List.Item.Meta
+                    avatar={<MessageOutlined className="conversation-icon" />}
+                    title={
+                      <Text
+                        ellipsis
+                        className={`conversation-title ${isActive ? 'active' : ''}`}
+                      >
+                        {conversation.title || 'New Conversation'}
+                      </Text>
+                    }
+                    description={
+                      <Text type="secondary" className="conversation-date">
+                        {formatDate(conversation.createdAt)}
+                      </Text>
+                    }
+                  />
+                </List.Item>
+              );
+            }}
           />
         )}
       </div>
@@ -97,4 +97,3 @@ const ConversationList = ({ conversations, activeConversationId, onSelectConvers
 };
 
 export default ConversationList;
-

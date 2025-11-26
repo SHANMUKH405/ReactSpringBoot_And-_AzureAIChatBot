@@ -1,0 +1,181 @@
+/* ConversationList Component Styles */
+
+.conversation-list-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 72px; /* Space for logout button */
+}
+
+.conversation-list-header {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.conversation-list-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.new-conversation-button {
+  height: 32px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.new-button-text {
+  margin-left: 4px;
+}
+
+.conversation-list-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+.conversation-empty {
+  margin-top: 50px;
+  padding: 20px;
+}
+
+.conversation-list {
+  padding: 0;
+}
+
+.conversation-item {
+  cursor: pointer;
+  padding: 12px 16px !important;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.conversation-item:hover {
+  background-color: #fafafa !important;
+}
+
+.conversation-item.active {
+  background-color: #e6f7ff !important;
+  border-left-color: #1890ff;
+}
+
+.conversation-item.active:hover {
+  background-color: #bae7ff !important;
+}
+
+.conversation-icon {
+  font-size: 20px;
+  color: #1890ff;
+}
+
+.conversation-title {
+  max-width: 180px;
+  display: block;
+  font-weight: normal;
+  font-size: 14px;
+  color: #262626;
+  transition: font-weight 0.2s ease;
+}
+
+.conversation-title.active {
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.conversation-date {
+  font-size: 12px;
+  color: #8c8c8c;
+  display: block;
+  margin-top: 4px;
+}
+
+.delete-button {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.conversation-item:hover .delete-button {
+  opacity: 1;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .conversation-list-container {
+    padding-bottom: 80px;
+  }
+
+  .conversation-list-header {
+    padding: 12px;
+  }
+
+  .conversation-list-title {
+    font-size: 15px;
+  }
+
+  .new-conversation-button {
+    height: 28px;
+    font-size: 12px;
+    padding: 0 12px;
+  }
+
+  .new-button-text {
+    display: none;
+  }
+
+  .conversation-item {
+    padding: 10px 12px !important;
+  }
+
+  .conversation-title {
+    max-width: 120px;
+    font-size: 13px;
+  }
+
+  .conversation-date {
+    font-size: 11px;
+  }
+
+  .conversation-icon {
+    font-size: 18px;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .conversation-title {
+    max-width: 150px;
+  }
+}
+
+/* Custom scrollbar for conversation list */
+.conversation-list-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversation-list-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.conversation-list-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.conversation-list-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Mobile scrollbar */
+@media (max-width: 768px) {
+  .conversation-list-content::-webkit-scrollbar {
+    width: 3px;
+  }
+}
+

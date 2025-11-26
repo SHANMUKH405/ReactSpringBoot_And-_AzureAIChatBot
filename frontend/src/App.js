@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ConfigProvider, Layout } from 'antd';
+import { ConfigProvider, Layout, Button } from 'antd';
+import { MenuOutlined, LogoutOutlined } from '@ant-design/icons';
 import Auth from './components/Auth';
 import ChatBox from './components/ChatBox';
 import ConversationList from './components/ConversationList';
@@ -14,12 +15,30 @@ function App() {
   const [user, setUser] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Check if user is logged in on mount
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile && sidebarCollapsed) {
+        setSidebarCollapsed(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [sidebarCollapsed]);
+
+  // Check if user is logged in on mount and load conversations
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
+      // Load conversations when user is restored from localStorage
+      loadConversations();
     }
   }, []);
 
@@ -48,6 +67,10 @@ function App() {
       const { getConversations } = await import('./services/api');
       const convs = await getConversations();
       setConversations(convs);
+      // Auto-select first conversation if available and none selected
+      if (convs.length > 0 && !activeConversationId) {
+        setActiveConversationId(convs[0].id?.toString());
+      }
     } catch (error) {
       console.error('Error loading conversations:', error);
     }
@@ -56,6 +79,10 @@ function App() {
   // Select conversation
   const handleSelectConversation = (conversationId) => {
     setActiveConversationId(conversationId?.toString());
+    // Close sidebar on mobile after selection
+    if (isMobile) {
+      setSidebarCollapsed(true);
+    }
   };
 
   // Delete conversation
@@ -81,6 +108,10 @@ function App() {
       const newConv = await createConversation('New Conversation');
       await loadConversations();
       setActiveConversationId(newConv.id?.toString());
+      // Close sidebar on mobile after creation
+      if (isMobile) {
+        setSidebarCollapsed(true);
+      }
     } catch (error) {
       console.error('Error creating conversation:', error);
     }
@@ -112,15 +143,29 @@ function App() {
         },
       }}
     >
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ minHeight: '100vh', overflow: 'hidden' }}>
         {/* Sidebar with Conversations */}
         <Sider
           width={280}
+          collapsible
+          collapsed={sidebarCollapsed}
+          onCollapse={setSidebarCollapsed}
+          breakpoint="lg"
+          collapsedWidth={isMobile ? 0 : 80}
+          trigger={null}
           style={{
             background: '#fff',
             borderRight: '1px solid #f0f0f0',
             overflow: 'hidden',
+            position: isMobile ? 'fixed' : 'relative',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            height: '100vh',
+            zIndex: 100,
+            boxShadow: isMobile && !sidebarCollapsed ? '2px 0 8px rgba(0,0,0,0.15)' : 'none',
           }}
+          className="chat-sidebar"
         >
           <ConversationList
             conversations={conversations}
@@ -130,40 +175,76 @@ function App() {
             onCreateConversation={handleCreateConversation}
           />
           {/* Logout button at bottom */}
-          <div style={{ padding: '16px', borderTop: '1px solid #f0f0f0' }}>
-            <button
+          <div style={{ 
+            padding: '16px', 
+            borderTop: '1px solid #f0f0f0',
+            background: '#fff',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}>
+            <Button
+              type="primary"
+              danger
+              icon={<LogoutOutlined />}
               onClick={handleLogout}
-              style={{
-                width: '100%',
-                padding: '8px',
-                background: '#ff4d4f',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
+              block
+              style={{ height: '40px', fontSize: '14px' }}
             >
-              Logout ({user.username})
-            </button>
+              {!sidebarCollapsed && `Logout (${user.username})`}
+            </Button>
           </div>
         </Sider>
 
+        {/* Mobile overlay when sidebar is open */}
+        {isMobile && !sidebarCollapsed && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.45)',
+              zIndex: 99,
+            }}
+            onClick={() => setSidebarCollapsed(true)}
+          />
+        )}
+
         {/* Main Content Area */}
-        <Layout>
-          <Content>
-            <div className="App">
-              <main className="App-main" style={{ height: '100vh' }}>
+        <Layout style={{ 
+          marginLeft: isMobile ? 0 : (sidebarCollapsed ? 80 : 280),
+          transition: 'margin-left 0.2s ease',
+          height: '100vh',
+        }}>
+          <Content style={{ height: '100vh', overflow: 'hidden', position: 'relative' }}>
+            {/* Mobile menu button */}
+            {isMobile && (
+              <Button
+                type="primary"
+                icon={<MenuOutlined />}
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                shape="circle"
+                size="large"
+                style={{
+                  position: 'fixed',
+                  top: 16,
+                  left: 16,
+                  zIndex: 101,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                }}
+              />
+            )}
+            <div className="App" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+              <main className="App-main" style={{ flex: 1, overflow: 'hidden' }}>
                 <ChatBox
                   conversationId={activeConversationId}
                   onConversationChange={setActiveConversationId}
                   onConversationsUpdate={loadConversations}
                 />
               </main>
-              <footer className="App-footer">
-                <p>
-                  Built with React, Ant Design, Spring Boot, and AI Integration
-                </p>
-              </footer>
             </div>
           </Content>
         </Layout>

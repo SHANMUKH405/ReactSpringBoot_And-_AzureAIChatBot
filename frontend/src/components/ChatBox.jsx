@@ -13,6 +13,7 @@ import {
 import { SendOutlined, ClearOutlined, ReloadOutlined, RobotOutlined } from '@ant-design/icons';
 import MessageBubble from './MessageBubble';
 import { sendChatMessage, checkHealth, getConversationHistory } from '../services/api';
+import './ChatBox.css';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -24,6 +25,7 @@ const { TextArea } = Input;
  * - Supports multiple conversations
  * - Message timestamps
  * - Conversation history loading
+ * - Responsive design for mobile and desktop
  */
 const ChatBox = ({ conversationId: propConversationId, onConversationChange, onConversationsUpdate }) => {
   // State variables - data that can change
@@ -220,13 +222,15 @@ const ChatBox = ({ conversationId: propConversationId, onConversationChange, onC
 
   return (
     <Card
+      className="chat-box-card"
       style={{
         width: '100%',
-        height: '100vh',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        boxShadow: 'none',
         borderRadius: 0,
+        border: 'none',
       }}
       bodyStyle={{
         display: 'flex',
@@ -236,79 +240,71 @@ const ChatBox = ({ conversationId: propConversationId, onConversationChange, onC
       }}
     >
       {/* Header */}
-      <div
-        style={{
-          padding: '16px 24px',
-          borderBottom: '1px solid #f0f0f0',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        }}
-      >
-        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-          <Title level={4} style={{ color: 'white', margin: 0 }}>
+      <div className="chat-header">
+        <Space style={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <Title level={4} className="chat-title">
             🤖 AI Chat Assistant
           </Title>
-          <Space>
+          <Space className="chat-header-actions" size="small">
             <Button
               icon={<ReloadOutlined />}
               onClick={checkBackendHealth}
               size="small"
+              className="header-button"
             >
-              {backendOnline ? 'Online' : 'Offline'}
+              <span className="status-text">{backendOnline ? 'Online' : 'Offline'}</span>
             </Button>
-            <Button
-              icon={<ClearOutlined />}
-              onClick={handleClear}
-              size="small"
-              danger
-            >
-              Clear
-            </Button>
+            {conversationId && (
+              <Button
+                icon={<ClearOutlined />}
+                onClick={handleClear}
+                size="small"
+                danger
+                className="header-button"
+              >
+                <span className="clear-text">Clear</span>
+              </Button>
+            )}
           </Space>
         </Space>
       </div>
 
       {/* Messages Area */}
-      <div
-        className="chat-messages"
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '24px 0',
-          background: '#fafafa',
-        }}
-      >
+      <div className="chat-messages">
         {loadingHistory ? (
-          <div style={{ textAlign: 'center', marginTop: 50 }}>
+          <div className="loading-container">
             <Spin size="large" />
-            <p style={{ marginTop: 16, color: '#8c8c8c' }}>Loading conversation...</p>
+            <p className="loading-text">Loading conversation...</p>
           </div>
         ) : messages.length === 0 ? (
           <Empty
             description={
-              <span style={{ color: '#8c8c8c' }}>
+              <span className="empty-description">
                 {conversationId ? 'No messages in this conversation yet' : 'Start a conversation with the AI assistant!'}
               </span>
             }
-            style={{ marginTop: '100px' }}
+            className="empty-state"
           />
         ) : (
-          messages.map((msg, index) => (
-            <MessageBubble
-              key={index}
-              message={msg.content}
-              isUser={msg.role === 'user'}
-              timestamp={msg.timestamp}
-            />
-          ))
+          <div className="messages-container">
+            {messages.map((msg, index) => (
+              <MessageBubble
+                key={index}
+                message={msg.content}
+                isUser={msg.role === 'user'}
+                timestamp={msg.timestamp}
+              />
+            ))}
+          </div>
         )}
         
         {/* Loading indicator when AI is responding */}
         {loading && (
-          <div style={{ padding: '0 16px', marginBottom: '16px' }}>
+          <div className="ai-thinking">
             <Space>
               <Avatar icon={<RobotOutlined />} style={{ backgroundColor: '#52c41a' }} />
               <Spin size="small" />
-              <span style={{ color: '#8c8c8c' }}>AI is thinking...</span>
+              <span className="thinking-text">AI is thinking...</span>
             </Space>
           </div>
         )}
@@ -318,41 +314,35 @@ const ChatBox = ({ conversationId: propConversationId, onConversationChange, onC
       </div>
 
       {/* Input Area */}
-      <div
-        style={{
-          padding: '16px 24px',
-          borderTop: '1px solid #f0f0f0',
-          background: 'white',
-        }}
-      >
-        <Space.Compact style={{ width: '100%' }}>
+      <div className="chat-input-area">
+        <Space.Compact style={{ width: '100%' }} className="input-container">
           <TextArea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
             autoSize={{ minRows: 1, maxRows: 4 }}
-            disabled={loading || !backendOnline}
-            style={{ flex: 1 }}
+            disabled={loading || !backendOnline || !conversationId}
+            className="message-input"
           />
           <Button
             type="primary"
             icon={<SendOutlined />}
             onClick={handleSend}
             loading={loading}
-            disabled={!inputValue.trim() || !backendOnline}
-            style={{ height: 'auto' }}
+            disabled={!inputValue.trim() || !backendOnline || !conversationId}
+            className="send-button"
           >
-            Send
+            <span className="send-text">Send</span>
           </Button>
         </Space.Compact>
         
         {/* Status indicator */}
-        <div style={{ marginTop: '8px', fontSize: '12px', color: '#8c8c8c' }}>
+        <div className="status-indicator">
           {backendOnline ? (
-            <span style={{ color: '#52c41a' }}>● Connected</span>
+            <span className="status-online">● Connected</span>
           ) : (
-            <span style={{ color: '#ff4d4f' }}>● Backend offline</span>
+            <span className="status-offline">● Backend offline</span>
           )}
         </div>
       </div>

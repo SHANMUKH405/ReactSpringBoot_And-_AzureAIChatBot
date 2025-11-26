@@ -1,20 +1,15 @@
 import React from 'react';
 import { Avatar, Typography, Space } from 'antd';
 import { UserOutlined, RobotOutlined } from '@ant-design/icons';
+import './MessageBubble.css';
 
 const { Text } = Typography;
 
 /**
- * MessageBubble Component - UPDATED with Timestamps!
+ * MessageBubble Component - UPDATED with Timestamps and Responsive Design!
  * 
  * Displays a single chat message (user or AI) with timestamp
- * 
- * Props:
- * - message: The message text
- * - isUser: Boolean - true if message is from user, false if from AI
- * - timestamp: Optional timestamp string (ISO format)
- * 
- * This is a reusable component - we use it for each message in the chat
+ * Fully responsive for mobile and desktop
  */
 const MessageBubble = ({ message, isUser, timestamp }) => {
   // Format timestamp for display
@@ -37,61 +32,27 @@ const MessageBubble = ({ message, isUser, timestamp }) => {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: isUser ? 'flex-end' : 'flex-start',
-        marginBottom: '16px',
-        padding: '0 16px',
-      }}
-    >
+    <div className={`message-wrapper ${isUser ? 'user-message' : 'ai-message'}`}>
       <Space
         direction={isUser ? 'horizontal-reverse' : 'horizontal'}
         align="start"
         size="small"
-        style={{ maxWidth: '70%' }}
+        className="message-space"
       >
         {/* Avatar - shows user or robot icon */}
         <Avatar
           icon={isUser ? <UserOutlined /> : <RobotOutlined />}
-          style={{
-            backgroundColor: isUser ? '#1890ff' : '#52c41a',
-          }}
+          className={`message-avatar ${isUser ? 'user-avatar' : 'ai-avatar'}`}
         />
         
         {/* Message bubble */}
-        <div
-          style={{
-            maxWidth: '100%',
-            padding: '12px 16px',
-            borderRadius: '12px',
-            backgroundColor: isUser ? '#1890ff' : '#ffffff',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            wordWrap: 'break-word',
-          }}
-        >
-          <Text
-            style={{
-              color: isUser ? '#ffffff' : '#000000',
-              fontSize: '14px',
-              whiteSpace: 'pre-wrap', // Preserves line breaks
-              display: 'block',
-            }}
-          >
+        <div className={`message-bubble ${isUser ? 'user-bubble' : 'ai-bubble'}`}>
+          <Text className={`message-text ${isUser ? 'user-text' : 'ai-text'}`}>
             {message}
           </Text>
           {/* Timestamp */}
           {timestamp && (
-            <Text
-              type="secondary"
-              style={{
-                fontSize: '11px',
-                color: isUser ? 'rgba(255,255,255,0.7)' : '#8c8c8c',
-                display: 'block',
-                marginTop: '4px',
-              }}
-            >
+            <Text className={`message-timestamp ${isUser ? 'user-timestamp' : 'ai-timestamp'}`}>
               {formatTimestamp(timestamp)}
             </Text>
           )}
@@ -102,4 +63,3 @@ const MessageBubble = ({ message, isUser, timestamp }) => {
 };
 
 export default MessageBubble;
-
