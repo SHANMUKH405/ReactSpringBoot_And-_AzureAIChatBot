@@ -45,6 +45,9 @@ public class AIService {
     @Value("${ai.api.timeout:30000}")
     private int timeout;
     
+    @Value("${app.url:https://react-spring-boot-and-azure-ai-chat.vercel.app}")
+    private String appUrl;
+    
     /**
      * Constructor - Creates WebClient for making HTTP requests
      * 
@@ -77,7 +80,7 @@ public class AIService {
             String response = webClient.post()
                     .uri(apiUrl)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
-                    .header("HTTP-Referer", "http://localhost:3002") // OpenRouter: Your app URL
+                    .header("HTTP-Referer", appUrl) // OpenRouter: Your app URL
                     .header("X-Title", "AI Chat Assistant") // OpenRouter: Your app name
                     .bodyValue(requestBody)
                     .retrieve()
